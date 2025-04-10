@@ -8,7 +8,7 @@ public class GerenciadorDependenciasDFS {
     private List<String> ordemInstalacao;
 
     public GerenciadorDependenciasDFS() {
-        grafo = new HashMap<>();
+        grafo = new LinkedHashMap<>();
     }
 
     public void adicionarDependencia(String biblioteca, String dependencia) {
@@ -30,20 +30,18 @@ public class GerenciadorDependenciasDFS {
             }
         }
 
-        Collections.reverse(ordemInstalacao);
         return ordemInstalacao;
     }
 
     private boolean dfs(String biblioteca) {
         if (visitando.contains(biblioteca)) {
-            return false; // Ciclo detectado
+            return false;
         }
 
         if (visitados.contains(biblioteca)) {
-            return true; // Já foi visitado
+            return true;
         }
 
-        visitados.add(biblioteca);
         visitando.add(biblioteca);
 
         for (String dependencia : grafo.get(biblioteca)) {
@@ -53,7 +51,9 @@ public class GerenciadorDependenciasDFS {
         }
 
         visitando.remove(biblioteca);
+        visitados.add(biblioteca);
         ordemInstalacao.add(biblioteca);
+
         return true;
     }
 
@@ -65,10 +65,12 @@ public class GerenciadorDependenciasDFS {
         gerenciador.adicionarDependencia("express", "debug");
         gerenciador.adicionarDependencia("body-parser", "bytes");
         gerenciador.adicionarDependencia("cookie-parser", "cookie");
+        gerenciador.adicionarDependencia("bytes", "debug");
+        //gerenciador.adicionarDependencia("cookie", "exemplo");
 
         try {
             List<String> ordem = gerenciador.ordenarInstalacao();
-            System.out.println("Ordem de instalação:");
+            System.out.println("Ordem de instalação correta:");
             for (String pkg : ordem) {
                 System.out.println("npm install " + pkg);
             }
